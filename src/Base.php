@@ -2,10 +2,12 @@
 
 namespace Content;
 
+use Content\Contract\BaseInterface;
+
 /**
  *  Base class for easier navigation and memory managment of multibyte strings
  */
-abstract class Base implements Contract\BaseInterface
+abstract class Base implements BaseInterface
 {
     /**
      * To avoid creating at some point two variable which would hold whole texts
@@ -57,6 +59,17 @@ abstract class Base implements Contract\BaseInterface
         return $res;
     }
 
+    protected function chunkString(string $content): array
+    {
+        return $this->iterate($content, 0, [[]],
+            function (string $letter, int $i, array &$content)
+            {
+                $content[] = $letter;
+                return $content;
+            }
+        ) ?? [];
+    }
+
     /**
      * Cuts string into UTF-8 letters
      * @param string  $content Script
@@ -69,13 +82,7 @@ abstract class Base implements Contract\BaseInterface
         }
 
         $this->contents[$this->contentPointer] = [];
-        $this->contents[$this->contentPointer]['content'] = $this->iterate($content, 0, [[]],
-            function (string $letter, int $i, array &$content)
-            {
-                $content[] = $letter;
-                return $content;
-            }
-        ) ?? [];
+        $this->contents[$this->contentPointer]['content'] = $this->chunkString($content);
         $this->contents[$this->contentPointer]['size'] = \sizeof($this->contents[$this->contentPointer]['content']);
     }
 
@@ -233,24 +240,24 @@ abstract class Base implements Contract\BaseInterface
      * Similarly to subStr but it returns Content
      * @param  int     $start
      * @param  int     $length
-     * @return Content
+     * @return BaseInterface
      */
-    public function cutToContent(int $start, int $length): Content
+    public function cutToContent(int $start, int $length): BaseInterface
     {
         $cut = array_slice($this->contents[$this->contentPointer]['content'], $start, $length);
-        return (new Content(''))->addArrayContent($cut, true);
+        return (new static(''))->addArrayContent($cut, true);
     }
 
     /**
      * Similarly to iSubStr but it returns Content
      * @param  int     $start
      * @param  int     $end
-     * @return Content
+     * @return BaseInterface
      */
-    public function iCutToContent(int $start, int $end): Content
+    public function iCutToContent(int $start, int $end): BaseInterface
     {
         $cut = array_slice($this->contents[$this->contentPointer]['content'], $start, $end + 1 - $start);
-        return (new Content(''))->addArrayContent($cut, true);
+        return (new static(''))->addArrayContent($cut, true);
     }
 
     /**
@@ -275,7 +282,7 @@ abstract class Base implements Contract\BaseInterface
         return array_slice($this->contents[$this->contentPointer]['content'], $start, $end + 1 - $start);
     }
 
-    public function trim($regex = "\s"): Content
+    public function trim($regex = "\s"): BaseInterface
     {
         $start = 0;
         $end   = $this->getLength();
@@ -290,7 +297,7 @@ abstract class Base implements Contract\BaseInterface
         for ($i=$this->getLength() - 1; $i >= 0; $i--) {
             $letter = $this->getLetter($i);
             if (preg_match('/' . $regex . '/', $letter) === 0) {
-                $end = $i + 1;
+                $end = $i;
                 break;
             }
         }
@@ -302,15 +309,21 @@ abstract class Base implements Contract\BaseInterface
         return $this->contents[$this->contentPointer]['size'] = \sizeof($this->contents[$this->contentPointer]['content']);
     }
 
-    public function splice(int $start, ?int $length = 1, array $items = []): self
+    public function splice(int $start, ?int $length = 1, array|string $items = []): self
     {
+        if (is_string($items)) {
+            $items = $this->chunkString($items);
+        }
         array_splice($this->contents[$this->contentPointer]['content'], $start, $length, $items);
         $this->resize();
         return $this;
     }
 
-    public function iSplice(int $start, int $end, array $items = []): self
+    public function iSplice(int $start, int $end, string|array $items = []): self
     {
+        if (is_string($items)) {
+            $items = $this->chunkString($items);
+        }
         array_splice($this->contents[$this->contentPointer]['content'], $start, $end + 1 - $start, $items);
         $this->resize();
         return $this;
