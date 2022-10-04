@@ -1,0 +1,17 @@
+{
+    "name": "mortimer333/content",
+    "type": "library",
+    "license": "GPL-2.0-only",
+    "autoload": {
+        "psr-4": {
+            "Content\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michal Dzierzbicki",
+            "email": "michal.dzierzbicki@vp.pl"
+        }
+    ],
+    "require": {}
+}
