@@ -340,4 +340,10 @@ abstract class Base implements BaseInterface
         }
         return false;
     }
+
+    public function reverse(): self
+    {
+        $this->replaceContent(implode('', array_reverse($this->getContent())));
+        return $this;
+    }
 }
