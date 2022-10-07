@@ -115,3 +115,11 @@ IF you need to find index of some needle you can use method `find`:
 $string = new Content\Utf8('Foo findme Bar');
 echo "`findme` starts at index " . $string->find('findme'); // `findme` starts at index 9
 ```
+
+## reverse
+
+If you need to your string you can use method `reverse`:
+```php
+$string = new Content\Utf8('ź = ć');
+echo (string) $string->reverse(); // ć = ź
+```
