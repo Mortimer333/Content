@@ -374,7 +374,7 @@ abstract class Base implements BaseInterface
         // as they will be saved in multiple spaces, so spliting text by 1 with substr
         // will only return in trash characters if we encounter something that has length
         // bigger then 1 byte
-        while (($letter = self::get($string, $i, $nextLetter)) !== false) {
+        while (($letter = static::get($string, $i, $nextLetter)) !== false) {
             if (!isset($table[$letter])) {
                 return false;
             }
