@@ -15,7 +15,7 @@ class Utf8 extends Base
      * @param  int    $nextLetter
      * @return string
      */
-    public function get(string $string, int $pointer, int &$nextLetter): string|bool
+    public static function get(string $string, int $pointer, int &$nextLetter): string|bool
     {
         if (!isset($string[$pointer])) {
             return false;

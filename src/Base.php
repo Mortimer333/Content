@@ -52,7 +52,7 @@ abstract class Base implements BaseInterface
     {
         $nextLetter = $i;
         $res = null;
-        while (($letter = $this->get($content, $i, $nextLetter)) !== false) {
+        while (($letter = self::get($content, $i, $nextLetter)) !== false) {
             $res = $func($letter, $i, ...$args);
             $i = $nextLetter;
         }
@@ -345,5 +345,42 @@ abstract class Base implements BaseInterface
     {
         $this->replaceContent(implode('', array_reverse($this->getContent())));
         return $this;
+    }
+
+    public static function isWhitespace(string $string): bool
+    {
+        if (strlen($string) == 0) {
+            return false;
+        }
+
+        // https://en.wikipedia.org/wiki/Whitespace_character
+        $table = [
+            // Unicode characters with property White_Space=yes
+            "\u{0009}" => true, "\u{000A}" => true, "\u{000B}" => true, "\u{000C}" => true,
+            "\u{000D}" => true, "\u{0020}" => true, "\u{0085}" => true, "\u{00A0}" => true,
+            "\u{1680}" => true, "\u{2000}" => true, "\u{2001}" => true, "\u{2002}" => true,
+            "\u{2003}" => true, "\u{2004}" => true, "\u{2005}" => true, "\u{2006}" => true,
+            "\u{2007}" => true, "\u{2008}" => true, "\u{2009}" => true, "\u{200A}" => true,
+            "\u{2028}" => true, "\u{2029}" => true, "\u{202F}" => true, "\u{205F}" => true,
+            "\u{3000}" => true,
+            // Related Unicode characters with property White_Space=no
+            "\u{180E}" => true, "\u{200B}" => true, "\u{200C}" => true, "\u{200D}" => true,
+            "\u{2060}" => true, "\u{FEFF}" => true,
+        ];
+        $nextLetter = $i = 0;
+
+        // Iterate over the string and cut it into proper UTF-8 letters
+        // We have to do this to have actual letters and not letters chunked into bytes
+        // as they will be saved in multiple spaces, so spliting text by 1 with substr
+        // will only return in trash characters if we encounter something that has length
+        // bigger then 1 byte
+        while (($letter = self::get($string, $i, $nextLetter)) !== false) {
+            if (!isset($table[$letter])) {
+                return false;
+            }
+            $i = $nextLetter;
+        }
+
+        return true;
     }
 }

@@ -123,3 +123,37 @@ If you need to reverse your string you can use method `reverse`:
 $string = new Content\Utf8('ź = ć');
 echo (string) $string->reverse(); // ć = ź
 ```
+
+# Static methods
+
+## Content\\[encoding]::get
+Each encoding (currently there is only UTF-8) must implement one static method `get` which takes string and returns the closest letter:
+```php
+$string = "źćó";
+$start = $nextLetter = 0;
+$letter = Content\Utf8::get($string, $start, $nextLetter);
+echo $letter; // "ź";
+
+// Notice that $nextLetter got updated with position of the end byte
+// of the letter that was found, so if we use it as start we can get next letter
+$letter = Content\Utf8::get($string, $nextLetter, $nextLetter);
+echo $letter; // "ć";
+```
+
+## Content\\Base::isWhitespace
+
+This method checks if passed string contains only whitespaces:
+```php
+Content\Base::isWhitespace("\n\t\r");          // true
+// If needed we can also use encoding class as they inherit this method
+Content\Utf8::isWhitespace("\n\t\r");          // true
+Content\Utf8::isWhitespace(" notWhitespace "); // false
+Content\Utf8::isWhitespace("");                // false
+
+// It checks all whitespaces defined in unicode
+// so it's a better then `trim` or `ctype_space` in terms of validating string
+$string = "\u{2003}\u{2000}\u{2009}";
+Content\Utf8::isWhitespace($string); // true
+\mb_strlen(trim($string));           // 3
+ctype_space($string);                // false
+```
