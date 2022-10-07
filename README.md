@@ -146,12 +146,10 @@ $letter = Content\Utf8::get($string, $nextLetter, $nextLetter);
 echo $letter; // "ć";
 ```
 
-## Content\\Base::isWhitespace
+## Content\\[encoding]::isWhitespace
 
 This method checks if passed string contains only whitespaces:
 ```php
-Content\Base::isWhitespace("\n\t\r");          // true
-// If needed we can also use encoding class as they inherit this method
 Content\Utf8::isWhitespace("\n\t\r");          // true
 Content\Utf8::isWhitespace(" notWhitespace "); // false
 Content\Utf8::isWhitespace("");                // false

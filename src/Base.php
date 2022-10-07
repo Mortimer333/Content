@@ -52,7 +52,7 @@ abstract class Base implements BaseInterface
     {
         $nextLetter = $i;
         $res = null;
-        while (($letter = self::get($content, $i, $nextLetter)) !== false) {
+        while (($letter = static::get($content, $i, $nextLetter)) !== false) {
             $res = $func($letter, $i, ...$args);
             $i = $nextLetter;
         }
