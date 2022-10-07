@@ -3,6 +3,12 @@ Allows for proper iteration and actions on multibyte strings
 
 Note: currently supports only UTF-8
 
+# Install
+
+```bash
+composer require mortimer333/content
+```
+
 # Why?
 If you were to iterate over this string from file encoded with UTF-8:
 ```php
