@@ -118,7 +118,7 @@ echo "`findme` starts at index " . $string->find('findme'); // `findme` starts a
 
 ## reverse
 
-If you need to your string you can use method `reverse`:
+If you need to reverse your string you can use method `reverse`:
 ```php
 $string = new Content\Utf8('ź = ć');
 echo (string) $string->reverse(); // ć = ź
