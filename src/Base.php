@@ -329,7 +329,7 @@ abstract class Base implements BaseInterface
         return $this;
     }
 
-    public function find(string $needle, int $start = 0): int
+    public function find(string $needle, int $start = 0): int|bool
     {
         $len = \mb_strlen($needle);
         for ($i=$start; $i < $this->getLength(); $i++) {
